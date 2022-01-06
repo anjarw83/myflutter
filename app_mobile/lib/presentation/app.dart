@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:app_mobile/presentation/routes.dart';
+
+import 'journey/login/login_screen.dart';
 
 class App extends StatelessWidget {
   @override
@@ -9,6 +12,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.lightBlue,
       ),
       home: const MyHomePage(title: 'My Flutter App'),
+      onGenerateRoute: Routes.generateRoutes,
     );
   }
 }
@@ -37,28 +41,32 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: const Center(
+        child: LoginScreen()
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+        // child: Column(
+        //   // Column
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: <Widget>[
+        //     const Text(
+        //       'You have pushed the button this many times:',
+        //     ),
+        //     Text(
+        //       '$_counter',
+        //       style: Theme
+        //           .of(context)
+        //           .textTheme
+        //           .headline4,
+        //     ),
+        //   ],
+        // ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: const Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
