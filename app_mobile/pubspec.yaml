@@ -31,8 +31,11 @@ dependencies:
   cupertino_icons: ^1.0.3
   flutter:
     sdk: flutter
+  google_sign_in: ^5.2.0
   module_common:
     path: ../module_common
+  path_provider: ^2.0.8
+  webview_flutter: ^3.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -55,6 +58,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/
 
   fonts:
     - family: TTCommons
