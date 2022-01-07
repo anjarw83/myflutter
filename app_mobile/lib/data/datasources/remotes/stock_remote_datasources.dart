@@ -11,7 +11,10 @@ class StockRemoteDataSource {
   });
 
   Future<List<StockModel>> getStock(String keyword) async {
-    final String url = StockEndpoints.getStock;
+    String url = StockEndpoints.getStock;
+    if(keyword != null){
+      url = '${StockEndpoints.getStock}?search=$keyword';
+    }
     debugPrint('StockRemoteDS::getStock');
 
     final Map<String, dynamic> response = await remoteDataClient.get(url);

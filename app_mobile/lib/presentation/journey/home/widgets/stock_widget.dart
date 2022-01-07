@@ -1,10 +1,12 @@
 import 'package:app_mobile/data/stocks_data.dart';
+import 'package:app_mobile/domain/entities/stock_entity.dart';
 import 'package:app_mobile/presentation/journey/home/stock_bloc/stock_bloc.dart';
 import 'package:app_mobile/presentation/journey/home/stock_bloc/stock_event.dart';
 import 'package:app_mobile/presentation/journey/home/stock_bloc/stock_state.dart';
 import 'package:app_mobile/presentation/journey/home/widgets/constants.dart';
 import 'package:app_mobile/common/injector/injector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Stocks extends StatefulWidget {
   const Stocks({Key key}) : super(key: key);
@@ -16,14 +18,15 @@ class Stocks extends StatefulWidget {
 class _StocksState extends State<Stocks> {
   StockBloc stockBloc;
 
-  final List<Map<String, dynamic>> _sampleStock = stockMock;
+  // final List<Map<String, dynamic>> _sampleStock = stockMock;
+  List<StockEntity> listStockEntity;
+  List<StockEntity> _filteredList;
 
-  List<Map<String, dynamic>> _stockFiltered = [];
+  // List<Map<String, dynamic>> _stockFiltered = [];
 
   @override
   void initState() {
-    stockBloc = Injector.resolve<StockBloc>();
-    _stockFiltered = _sampleStock;
+    stockBloc = Injector.resolve<StockBloc>()..add(FetchStockEvent());
     super.initState();
   }
 
@@ -34,10 +37,12 @@ class _StocksState extends State<Stocks> {
   }
 
   @override
-  Widget build(BuildContext context) => _buildBody(context);
+  Widget build(BuildContext context) => BlocProvider(
+        create: (_) => stockBloc,
+        child: _buildBody(context),
+      );
 
   Widget _buildBody(BuildContext context) {
-    stockBloc.add(StockInitEvent());
     return Column(
       children: [
         const SizedBox(
@@ -47,7 +52,27 @@ class _StocksState extends State<Stocks> {
         const SizedBox(
           height: 20,
         ),
-        _buildStockTable(context)
+        BlocConsumer<StockBloc, StockState>(
+          builder: (context, state) {
+            switch (state.runtimeType) {
+              case StockLoadingState:
+                return const CircularProgressIndicator();
+              case StockLoadedState:
+                return _buildStockTable(context);
+              default:
+                return Container();
+            }
+          },
+          listener: (context, state) {
+            if (state is StockLoadedState) {
+              debugPrint('InsideListener');
+              final StockLoadedState _state = state;
+              listStockEntity = _state.listStockEntity;
+            }
+          },
+        )
+
+        // _buildStockTable(context)
       ],
     );
   }
@@ -65,11 +90,11 @@ class _StocksState extends State<Stocks> {
   Widget _buildStockHeader(BuildContext context) {}
 
   Widget _buildStockTable(BuildContext context) => Expanded(
-        child: _stockFiltered.isNotEmpty
+        child: listStockEntity != null
             ? ListView.builder(
-                itemCount: _sampleStock.length,
+                itemCount: listStockEntity.length,
                 itemBuilder: (context, index) => Card(
-                  key: ValueKey(_sampleStock[index]['id']),
+                  key: ValueKey('${listStockEntity[index]}_id'),
                   color: Colors.white70,
                   // elevation: 2,
                   margin: const EdgeInsets.symmetric(
@@ -120,7 +145,7 @@ class _StocksState extends State<Stocks> {
         margin: const EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
         child: Text(
-          _sampleStock[index]['currency'],
+          listStockEntity[index].currency,
           style: const TextStyle(
               color: Colors.deepPurpleAccent, fontWeight: FontWeight.bold),
         ),
@@ -131,7 +156,7 @@ class _StocksState extends State<Stocks> {
         margin: const EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
         child: Text(
-          _sampleStock[index]['description'],
+          listStockEntity[index].description,
         ),
       ),
       Container(
@@ -139,7 +164,7 @@ class _StocksState extends State<Stocks> {
         margin: const EdgeInsets.only(left: 20),
         alignment: Alignment.centerLeft,
         child: Text(
-          _sampleStock[index]['displaySymbol'],
+          listStockEntity[index].displaySymbol,
         ),
       ),
     ];
@@ -153,18 +178,21 @@ class _StocksState extends State<Stocks> {
   void _runFilter(String searchKeyword) {
     List<Map<String, dynamic>> results = [];
     debugPrint('Keyword Hit $searchKeyword');
-    if (searchKeyword.isEmpty) {
-      results = _sampleStock;
-    } else {
-      results = _sampleStock
-          .where((stock) => stock['description']
-              .toLowerCase()
-              .contains(searchKeyword.toLowerCase()))
-          .toList();
-    }
+    // if (searchKeyword.isNotEmpty) {
+    stockBloc.add(FetchStockEvent(keyword: searchKeyword));
+    // }
+    // if (searchKeyword.isEmpty) {
+    //   results = listStockEntity;
+    // } else {
+    //   results = listStockEntity
+    //       .where((stock) => stock['description']
+    //           .toLowerCase()
+    //           .contains(searchKeyword.toLowerCase()))
+    //       .toList();
+    // }
 
-    setState(() {
-      _stockFiltered = results;
-    });
+    // setState(() {
+    //   _stockFiltered = results;
+    // });
   }
 }
