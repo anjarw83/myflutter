@@ -29,10 +29,9 @@ class StockBloc extends Bloc<StockEvent, StockState> {
 
   Stream<StockState> _mapFetchStockToState(FetchStockEvent event) async*{
     yield StockLoadingState();
-
     try{
       final result = await stockUseCase.getStock(event.keyword);
-      yield StockLoadedState(stockEntity: result);
+      yield StockLoadedState(listStockEntity: result);
     } catch (error){
       yield StockLoadFailedState();
     }

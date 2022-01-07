@@ -9,7 +9,8 @@ class StockUseCase {
     @required this.stockRepository,
   });
 
-  Future<StockEntity> getStock(String keyword) async {
+  Future<List<StockEntity>> getStock(String keyword) async {
+    debugPrint('StockUseCase::getStock');
     return stockRepository.getStock(keyword);
   }
 }

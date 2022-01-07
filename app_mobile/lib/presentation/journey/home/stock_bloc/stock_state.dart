@@ -7,10 +7,10 @@ class StockInitialState extends StockState {}
 class StockLoadingState extends StockState {}
 
 class StockLoadedState extends StockState {
-  final StockEntity stockEntity;
+  final List<StockEntity> listStockEntity;
 
   StockLoadedState({
-    this.stockEntity,
+    this.listStockEntity,
   });
 }
 

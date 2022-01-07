@@ -11,7 +11,7 @@ class StockRepositoryImpl implements StockRepository {
   });
 
   @override
-  Future<StockEntity> getStock(String keyword) async {
+  Future<List<StockEntity>> getStock(String keyword) async {
     final data = await stockRemoteDataSource.getStock(keyword);
 
     return data;
