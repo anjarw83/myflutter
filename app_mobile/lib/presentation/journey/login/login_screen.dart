@@ -1,4 +1,3 @@
-import 'package:app_mobile/presentation/journey/home/home_screen.dart';
 import 'package:app_mobile/presentation/journey/login/widget/google_signin_button.dart';
 import 'package:flutter/material.dart';
 
@@ -13,16 +12,4 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _loginButton(BuildContext context) {
-    return ElevatedButton(
-        child: const Text('Goto Home'),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ),
-          );
-        });
-  }
 }

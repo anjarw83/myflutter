@@ -31,6 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   flutter:
     sdk: flutter
+  flutter_svg: ^1.0.0
   google_sign_in: ^5.2.0
   module_common:
     path: ../module_common

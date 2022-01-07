@@ -27,7 +27,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   ),
                 ),
               ),
-              onPressed: () => _handleSignin(context),
+              onPressed: () => _handleSignIn(context),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Row(
@@ -56,7 +56,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     );
   }
 
-  void _handleSignin(context) => Navigator.of(context).push(
+  void _handleSignIn(context) => Navigator.of(context).push(
         MaterialPageRoute(
           builder:(BuildContext context) => LoginWeb(),
         ),
