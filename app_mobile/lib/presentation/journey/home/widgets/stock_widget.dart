@@ -19,13 +19,44 @@ class _StocksState extends State<Stocks> {
 
   List<StockEntity> listStockEntity;
   TextEditingController textController;
-  String _prevKeyword;
+  int page = 1;
+  double lastPosition = 0;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     textController = TextEditingController();
-    stockBloc = Injector.resolve<StockBloc>()..add(FetchStockEvent());
+    listStockEntity = [];
+    stockBloc = Injector.resolve<StockBloc>()
+      ..add(
+        FetchStockEvent(
+          keyword: '',
+          limit: StockConstants.stockPerPage,
+        ),
+      );
+    _initLoadMore();
+
     super.initState();
+  }
+
+  void _initLoadMore() {
+    scrollController.addListener(() {
+      if (scrollController.position.atEdge) {
+        lastPosition = scrollController.position.minScrollExtent;
+
+        final bool isTop = scrollController.position.pixels == 0;
+        if (!isTop) {
+          debugPrint('LoadMore...');
+          stockBloc.add(
+            LoadMoreStockEvent(
+              keyword: textController.text,
+              page: page + 1,
+              limit: StockConstants.stockPerPage,
+            ),
+          );
+        }
+      }
+    });
   }
 
   @override
@@ -57,6 +88,7 @@ class _StocksState extends State<Stocks> {
               case StockLoadingState:
                 return const CircularProgressIndicator();
               case StockLoadedState:
+              case LoadMoreStockSuccessState:
                 return _buildStockTable(context);
               default:
                 return Container();
@@ -68,14 +100,32 @@ class _StocksState extends State<Stocks> {
                 debugPrint('InsideListener');
                 final StockLoadedState _state = state;
                 listStockEntity = _state.listStockEntity;
+                // lastPosition = listStockEntity.length;
                 break;
               case StockWatchListUpdateSuccessState:
                 debugPrint('UpdateWatchList Succeed');
                 stockBloc.add(
                   FetchStockEvent(
                     keyword: textController.text,
+                    limit: StockConstants.stockPerPage,
                   ),
                 );
+                break;
+              case LoadMoreStockInProgressState:
+                if (scrollController.hasClients) {
+                  lastPosition = scrollController.position.maxScrollExtent;
+                  // scrollController.jumpTo(lastPosition);
+                }
+                break;
+              case LoadMoreStockSuccessState:
+                debugPrint('LoadMoreSuccess');
+                page++;
+                final LoadMoreStockSuccessState _state = state;
+                listStockEntity.addAll(_state.listStockEntity);
+
+                break;
+              case LoadMoreStockFailedState:
+                _showMessage(StockConstants.loadMoreFailedText);
                 break;
             }
           },
@@ -97,24 +147,30 @@ class _StocksState extends State<Stocks> {
     );
   }
 
-  Widget _buildStockHeader(BuildContext context) {}
+  Widget _buildStockHeader(BuildContext context) {
+  }
 
   Widget _buildStockTable(BuildContext context) => Expanded(
         child: listStockEntity != null
-            ? ListView.builder(
-                itemCount: listStockEntity.length,
-                itemBuilder: (context, index) => Card(
-                  key: ValueKey('${listStockEntity[index]}_id'),
-                  color: Colors.white70,
-                  // elevation: 2,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 1,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ..._buildListRow(context, index),
-                    ],
+            ? RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView.builder(
+                  key: ObjectKey('key_list_${listStockEntity[0].id}'),
+                  controller: scrollController,
+                  itemCount: listStockEntity.length,
+                  itemBuilder: (context, index) => Card(
+                    key: ValueKey('${listStockEntity[index]}_id'),
+                    color: Colors.white70,
+                    // elevation: 2,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 1,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ..._buildListRow(context, index),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -181,6 +237,11 @@ class _StocksState extends State<Stocks> {
     ];
   }
 
+  Widget _buildFooterloader(BuildContext context) => Container(
+        height: 25,
+        child: CircularProgressIndicator(),
+      );
+
   void _toggleWatchList(StockEntity entity) {
     debugPrint('Screen Toggle Watchlist');
     stockBloc.add(ToggleStockWatchlistEvent(
@@ -200,9 +261,35 @@ class _StocksState extends State<Stocks> {
         const Duration(
           milliseconds: StockConstants.searchDelay,
         ), () {
-      if ( textController.text == searchKeyword) {
-        stockBloc.add(FetchStockEvent(keyword: searchKeyword));
+      if (textController.text == searchKeyword) {
+        stockBloc.add(
+          FetchStockEvent(
+              keyword: searchKeyword, limit: StockConstants.stockPerPage),
+        );
       }
     });
   }
+
+  Future<void> _onRefresh() async {
+    await Future.delayed(
+      const Duration(milliseconds: StockConstants.searchDelay),
+      () {
+        textController.text = '';
+        page = 1;
+        stockBloc.add(
+          FetchStockEvent(
+              keyword: textController.text, limit: StockConstants.stockPerPage),
+        );
+      },
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
 }

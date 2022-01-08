@@ -6,9 +6,11 @@ class StockInitEvent extends StockEvent {}
 
 class FetchStockEvent extends StockEvent {
   final String keyword;
+  final int limit;
 
   FetchStockEvent({
-    this.keyword,
+    @required this.keyword,
+    @required this.limit,
   });
 }
 
@@ -19,5 +21,17 @@ class ToggleStockWatchlistEvent extends StockEvent {
   ToggleStockWatchlistEvent({
     @required this.id,
     @required this.status,
+  });
+}
+
+class LoadMoreStockEvent extends StockEvent {
+  final String keyword;
+  final int page;
+  final int limit;
+
+  LoadMoreStockEvent({
+    this.keyword = '',
+    this.page = 1,
+    this.limit = 20,
   });
 }

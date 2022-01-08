@@ -9,9 +9,10 @@ class StockUseCase {
     @required this.stockRepository,
   });
 
-  Future<List<StockEntity>> getStock(String keyword) async {
+  Future<List<StockEntity>> getStock(
+      String keyword, int page, int limit) async {
     debugPrint('StockUseCase::getStock');
-    return stockRepository.getStock(keyword);
+    return stockRepository.getStock(keyword, page, limit);
   }
 
   Future<bool> toggleStockWatchlist(String id, bool watchlist) async {

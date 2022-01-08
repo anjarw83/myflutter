@@ -16,6 +16,18 @@ class StockLoadedState extends StockState {
 
 class StockLoadFailedState extends StockState {}
 
+class LoadMoreStockInProgressState extends StockState {}
+
+class LoadMoreStockFailedState extends StockState {}
+
+class LoadMoreStockSuccessState extends StockLoadedState {
+  LoadMoreStockSuccessState({
+    List<StockEntity> listStockEntity,
+  }) : super(
+          listStockEntity: listStockEntity,
+        );
+}
+
 class StockWatchListUpdatingState extends StockState {}
 
 class StockWatchListUpdateSuccessState extends StockState {}

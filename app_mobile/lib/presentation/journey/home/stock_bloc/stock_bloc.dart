@@ -27,14 +27,19 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       case ToggleStockWatchlistEvent:
         yield* _mapToggleWatchlist(event);
         break;
+      case LoadMoreStockEvent:
+        yield* _mapLoadMoreStock(event);
+        break;
     }
   }
 
   Stream<StockState> _mapFetchStockToState(FetchStockEvent event) async* {
+    const page = 1;
     yield StockLoadingState();
     debugPrint('BLOC: Search ${event.keyword}');
     try {
-      final result = await stockUseCase.getStock(event.keyword);
+      final result =
+          await stockUseCase.getStock(event.keyword, page, event.limit);
       yield StockLoadedState(listStockEntity: result);
     } catch (error) {
       yield StockLoadFailedState();
@@ -53,6 +58,18 @@ class StockBloc extends Bloc<StockEvent, StockState> {
     } catch (error) {
       debugPrint(error.toString());
       yield StockWatchListUpdateFailedState();
+    }
+  }
+
+  Stream<StockState> _mapLoadMoreStock(LoadMoreStockEvent event) async* {
+    yield LoadMoreStockInProgressState();
+    try {
+      final result =
+          await stockUseCase.getStock(event.keyword, event.page, event.limit);
+      yield LoadMoreStockSuccessState(listStockEntity: result);
+    } catch (error) {
+      debugPrint(error.toString());
+      yield LoadMoreStockFailedState();
     }
   }
 }
