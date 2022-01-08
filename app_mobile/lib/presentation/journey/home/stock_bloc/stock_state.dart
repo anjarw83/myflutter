@@ -15,3 +15,9 @@ class StockLoadedState extends StockState {
 }
 
 class StockLoadFailedState extends StockState {}
+
+class StockWatchListUpdatingState extends StockState {}
+
+class StockWatchListUpdateSuccessState extends StockState {}
+
+class StockWatchListUpdateFailedState extends StockState {}

@@ -13,4 +13,8 @@ class StockUseCase {
     debugPrint('StockUseCase::getStock');
     return stockRepository.getStock(keyword);
   }
+
+  Future<bool> toggleStockWatchlist(String id, bool watchlist) async {
+    return stockRepository.toggleStockWatchlist(id, watchlist);
+  }
 }

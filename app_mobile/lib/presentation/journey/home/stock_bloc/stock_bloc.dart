@@ -9,14 +9,14 @@ class StockBloc extends Bloc<StockEvent, StockState> {
 
   StockBloc({
     @required this.stockUseCase,
-  }): super(StockInitialState());
+  }) : super(StockInitialState());
 
   @override
   Stream<StockState> mapEventToState(
-      StockEvent event,
-      ) async* {
+    StockEvent event,
+  ) async* {
     debugPrint('MapEventToState');
-    switch(event.runtimeType){
+    switch (event.runtimeType) {
       case StockInitEvent:
         debugPrint('Emit Initial Event');
         yield StockInitialState();
@@ -24,17 +24,35 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       case FetchStockEvent:
         yield* _mapFetchStockToState(event);
         break;
+      case ToggleStockWatchlistEvent:
+        yield* _mapToggleWatchlist(event);
+        break;
     }
   }
 
-  Stream<StockState> _mapFetchStockToState(FetchStockEvent event) async*{
+  Stream<StockState> _mapFetchStockToState(FetchStockEvent event) async* {
     yield StockLoadingState();
     debugPrint('BLOC: Search ${event.keyword}');
-    try{
+    try {
       final result = await stockUseCase.getStock(event.keyword);
       yield StockLoadedState(listStockEntity: result);
-    } catch (error){
+    } catch (error) {
       yield StockLoadFailedState();
+    }
+  }
+
+  Stream<StockState> _mapToggleWatchlist(
+      ToggleStockWatchlistEvent event) async* {
+    yield StockWatchListUpdatingState();
+    try {
+      await stockUseCase.toggleStockWatchlist(
+        event.id,
+        event.status,
+      );
+      yield StockWatchListUpdateSuccessState();
+    } catch (error) {
+      debugPrint(error.toString());
+      yield StockWatchListUpdateFailedState();
     }
   }
 }

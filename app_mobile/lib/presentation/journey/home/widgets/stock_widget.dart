@@ -1,4 +1,3 @@
-import 'package:app_mobile/data/stocks_data.dart';
 import 'package:app_mobile/domain/entities/stock_entity.dart';
 import 'package:app_mobile/presentation/journey/home/stock_bloc/stock_bloc.dart';
 import 'package:app_mobile/presentation/journey/home/stock_bloc/stock_event.dart';
@@ -18,20 +17,20 @@ class Stocks extends StatefulWidget {
 class _StocksState extends State<Stocks> {
   StockBloc stockBloc;
 
-  // final List<Map<String, dynamic>> _sampleStock = stockMock;
   List<StockEntity> listStockEntity;
-  List<StockEntity> _filteredList;
-
-  // List<Map<String, dynamic>> _stockFiltered = [];
+  TextEditingController textController;
+  String _prevKeyword;
 
   @override
   void initState() {
+    textController = TextEditingController();
     stockBloc = Injector.resolve<StockBloc>()..add(FetchStockEvent());
     super.initState();
   }
 
   @override
   void dispose() {
+    textController.dispose();
     stockBloc.close();
     super.dispose();
   }
@@ -64,10 +63,20 @@ class _StocksState extends State<Stocks> {
             }
           },
           listener: (context, state) {
-            if (state is StockLoadedState) {
-              debugPrint('InsideListener');
-              final StockLoadedState _state = state;
-              listStockEntity = _state.listStockEntity;
+            switch (state.runtimeType) {
+              case StockLoadedState:
+                debugPrint('InsideListener');
+                final StockLoadedState _state = state;
+                listStockEntity = _state.listStockEntity;
+                break;
+              case StockWatchListUpdateSuccessState:
+                debugPrint('UpdateWatchList Succeed');
+                stockBloc.add(
+                  FetchStockEvent(
+                    keyword: textController.text,
+                  ),
+                );
+                break;
             }
           },
         )
@@ -79,6 +88,7 @@ class _StocksState extends State<Stocks> {
 
   Widget _buildSearchTable(BuildContext context) {
     return TextField(
+      controller: textController,
       onChanged: _runFilter,
       decoration: const InputDecoration(
         labelText: StockConstants.searchText,
@@ -115,6 +125,7 @@ class _StocksState extends State<Stocks> {
       );
 
   List<Widget> _buildListRow(BuildContext context, index) {
+    final bool watchList = listStockEntity[index].watchlist ?? true;
     return [
       Container(
         width: 30,
@@ -130,13 +141,13 @@ class _StocksState extends State<Stocks> {
         ),
       ),
       GestureDetector(
-        onTap: _toggleWatchList,
+        onTap: () => _toggleWatchList(listStockEntity[index]),
         child: Container(
           height: 50,
           width: 25,
           alignment: Alignment.center,
-          child: const Icon(
-            Icons.star_border,
+          child: Icon(
+            watchList ? Icons.star_border : Icons.star_outlined,
           ),
         ),
       ),
@@ -170,29 +181,28 @@ class _StocksState extends State<Stocks> {
     ];
   }
 
-  void _toggleWatchList() {
+  void _toggleWatchList(StockEntity entity) {
     debugPrint('Screen Toggle Watchlist');
-    stockBloc.add(FetchStockEvent(keyword: ''));
+    stockBloc.add(ToggleStockWatchlistEvent(
+      id: entity.id,
+      status: !entity.watchlist,
+    ));
   }
 
-  void _runFilter(String searchKeyword) {
-    List<Map<String, dynamic>> results = [];
-    debugPrint('Keyword Hit $searchKeyword');
-    // if (searchKeyword.isNotEmpty) {
-    stockBloc.add(FetchStockEvent(keyword: searchKeyword));
-    // }
-    // if (searchKeyword.isEmpty) {
-    //   results = listStockEntity;
-    // } else {
-    //   results = listStockEntity
-    //       .where((stock) => stock['description']
-    //           .toLowerCase()
-    //           .contains(searchKeyword.toLowerCase()))
-    //       .toList();
-    // }
+  Future<void> _runFilter(String searchKeyword) async {
+    textController
+      ..text = searchKeyword
+      ..selection = TextSelection.fromPosition(
+        TextPosition(offset: textController.text.length),
+      );
 
-    // setState(() {
-    //   _stockFiltered = results;
-    // });
+    await Future.delayed(
+        const Duration(
+          milliseconds: StockConstants.searchDelay,
+        ), () {
+      if ( textController.text == searchKeyword) {
+        stockBloc.add(FetchStockEvent(keyword: searchKeyword));
+      }
+    });
   }
 }

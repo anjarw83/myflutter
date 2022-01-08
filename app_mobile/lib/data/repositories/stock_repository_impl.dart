@@ -16,4 +16,10 @@ class StockRepositoryImpl implements StockRepository {
 
     return data;
   }
+
+  @override
+  Future<bool> toggleStockWatchlist(String id, bool watchlist) async {
+    final data = await stockRemoteDataSource.toggleStockWatchlist(id, watchlist);
+    return data;
+  }
 }

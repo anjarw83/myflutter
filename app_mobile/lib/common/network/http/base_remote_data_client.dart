@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 class BaseRemoteDataClient {
-
   Client client;
   String host;
   String token;
@@ -16,11 +15,9 @@ class BaseRemoteDataClient {
     this.host,
     this.header,
     this.token,
-  })
-  {
+  }) {
     setUpClient();
   }
-
 
   void setUpClient() {
     debugPrint('setupClient');
@@ -34,6 +31,7 @@ class BaseRemoteDataClient {
   ]) =>
       {
         // ...header,
+        'content-type': 'application/json',
         ...overrideHeader,
       };
 
@@ -41,22 +39,30 @@ class BaseRemoteDataClient {
     return Uri.parse('$host$path');
   }
 
-  dynamic getResponse(Response response){
+  dynamic getResponse(Response response) {
     final Map<String, dynamic> result = json.decode(response.body);
     return result;
   }
 
   dynamic get(String path,
-      {Map<String, String> overrideHeader = const {}
-      }) async {
-    debugPrint('Entering BaseRDC : get');
+      {Map<String, String> overrideHeader = const {}}) async {
+    debugPrint('[BaseRemoteDataClient].get');
     final requestHeader = generateRequestHeader(overrideHeader);
 
-    final Response response = await client.get(
-        getParsedUrl(path),
-        headers: requestHeader
-    );
+    final Response response =
+        await client.get(getParsedUrl(path), headers: requestHeader);
     return getResponse(response);
   }
 
+  dynamic patch(String path, dynamic data,
+      {Map<String, String> overrideHeader = const {}}) async {
+    final requestHeader = generateRequestHeader(overrideHeader);
+
+    final Response response = await client.patch(
+      getParsedUrl(path),
+      body: json.encode(data),
+      headers: requestHeader,
+    );
+    return getResponse(response);
+  }
 }

@@ -32,7 +32,7 @@ class StockModel extends StockEntity {
 
       return listStock
           .map((json) => StockModel(
-                id: json['id'] ?? '',
+                id: json['_id'] ?? '',
                 currency: json['currency'] ?? '',
                 description: json['description'] ?? '',
                 displaySymbol: json['displaySymbol'] ?? '',

@@ -1,3 +1,3 @@
 class StockEndpoints {
-  static const String getStock = '/stock';
+  static const String stock = '/stock';
 }
