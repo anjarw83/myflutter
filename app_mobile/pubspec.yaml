@@ -34,13 +34,14 @@ dependencies:
   flutter_bloc: ^7.0.1
   flutter_svg: ^1.0.0
   google_sign_in: ^5.2.0
+  hive: ^2.0.5
+  http: ^0.13.4
   kiwi: ^4.0.1
   module_common:
     path: ../module_common
   path_provider: ^2.0.8
+  shared_preferences: ^2.0.11
   webview_flutter: ^3.0.0
-  http: ^0.13.4
-  hive: ^2.0.5
 
 
   # The following adds the Cupertino Icons font to your application.

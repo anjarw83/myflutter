@@ -1,6 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:app_mobile/common/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:app_mobile/common/bloc/authentication_bloc/authentication_event.dart';
+import 'package:app_mobile/common/bloc/authentication_bloc/authentication_state.dart';
 import 'package:app_mobile/common/constants/login_constants.dart';
+import 'package:app_mobile/common/injector/injector.dart';
 import 'package:app_mobile/presentation/journey/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -13,7 +18,9 @@ class LoginWeb extends StatefulWidget {
 class _LoginWebState extends State<LoginWeb> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+
   // final scaffoldKey = GlobalKey<ScaffoldState>();
+  WebViewController _webViewController;
 
   @override
   void initState() {
@@ -34,6 +41,7 @@ class _LoginWebState extends State<LoginWeb> {
           initialUrl: LoginConstants.authGoogle,
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
+            _webViewController = webViewController;
             _controller.complete(webViewController);
           },
           onProgress: (int progress) {
@@ -52,6 +60,7 @@ class _LoginWebState extends State<LoginWeb> {
     debugPrint('URL : $url');
     if (url.contains(LoginConstants.keywordSuccess)) {
       debugPrint('Catch URL Success');
+      readJS();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -91,5 +100,13 @@ class _LoginWebState extends State<LoginWeb> {
           }
           return Container();
         });
+  }
+
+  void readJS() async {
+    final html = await _webViewController.runJavascriptReturningResult(
+        "window.document.getElementsByTagName('pre')[0].innerHTML;");
+    Injector.resolve<AuthenticationBloc>()
+        .add(LoggingInEvent(userMap: json.decode(html)));
+    print(html);
   }
 }

@@ -1,3 +1,5 @@
+import 'package:app_mobile/domain/entities/user_entity.dart';
+
 abstract class AuthenticationEvent {
   final String userId;
 
@@ -5,7 +7,18 @@ abstract class AuthenticationEvent {
 }
 
 class LoggingInEvent extends AuthenticationEvent {
-  LoggingInEvent({String userId}) : super(userId);
+  final Map<String, dynamic> userMap;
+
+  LoggingInEvent({
+    String userId,
+    this.userMap,
+  }) : super(userId);
+}
+
+class FetchAuthUser extends AuthenticationEvent {
+  FetchAuthUser({
+    String userId,
+  }) : super(userId);
 }
 
 class LoggingOutEvent extends AuthenticationEvent {
