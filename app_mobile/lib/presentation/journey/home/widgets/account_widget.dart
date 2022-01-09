@@ -37,7 +37,7 @@ class _MyAccount extends State<MyAccount> {
           height: 250,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.red, Colors.deepOrange.shade300],
+              colors: [Colors.blue, Colors.blueAccent.shade700],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               stops: [0.5, 0.9],
@@ -90,7 +90,7 @@ class _MyAccount extends State<MyAccount> {
                 title: Text(
                   'Email',
                   style: TextStyle(
-                    color: Colors.deepOrange,
+                    color: Colors.blueAccent,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -107,7 +107,7 @@ class _MyAccount extends State<MyAccount> {
                 title: Text(
                   'GitHub',
                   style: TextStyle(
-                    color: Colors.deepOrange,
+                    color: Colors.blueAccent,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -124,7 +124,7 @@ class _MyAccount extends State<MyAccount> {
                 title: Text(
                   'Linkedin',
                   style: TextStyle(
-                    color: Colors.deepOrange,
+                    color: Colors.blueAccent,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),

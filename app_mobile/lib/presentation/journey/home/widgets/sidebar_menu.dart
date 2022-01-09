@@ -1,3 +1,7 @@
+import 'package:app_mobile/common/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:app_mobile/common/bloc/authentication_bloc/authentication_event.dart';
+import 'package:app_mobile/common/injector/injector.dart';
+import 'package:app_mobile/presentation/app.dart';
 import 'package:flutter/material.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -24,9 +28,22 @@ class SideBarMenu extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () => _logout(context),
           ),
         ],
+      ),
+    );
+  }
+
+  void _logout(BuildContext context) {
+    debugPrint('Proceed LoggingOut');
+    Injector.resolve<AuthenticationBloc>().add(
+      LoggingOutEvent(),
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(),
       ),
     );
   }
