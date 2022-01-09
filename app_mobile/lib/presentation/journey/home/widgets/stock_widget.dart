@@ -6,6 +6,7 @@ import 'package:app_mobile/presentation/journey/home/widgets/constants.dart';
 import 'package:app_mobile/common/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 class Stocks extends StatefulWidget {
   const Stocks({Key key}) : super(key: key);
@@ -147,8 +148,7 @@ class _StocksState extends State<Stocks> {
     );
   }
 
-  Widget _buildStockHeader(BuildContext context) {
-  }
+  Widget _buildStockHeader(BuildContext context) {}
 
   Widget _buildStockTable(BuildContext context) => Expanded(
         child: listStockEntity != null
@@ -202,8 +202,8 @@ class _StocksState extends State<Stocks> {
           height: 50,
           width: 25,
           alignment: Alignment.center,
-          child: Icon(
-            watchList ? Icons.star_border : Icons.star_outlined,
+          child: _watchIcon(
+            listStockEntity[index],
           ),
         ),
       ),
@@ -292,4 +292,21 @@ class _StocksState extends State<Stocks> {
     );
   }
 
+  Widget _watchIcon(StockEntity entity) {
+    bool hasWatchlist = entity.watchlist ?? true;
+    Color watchColors;
+    if (hasWatchlist) {
+      watchColors = Colors.orangeAccent;
+    } else {
+      watchColors = Colors.white;
+    }
+
+    return SvgPicture.asset(
+      'assets/binoculars.svg',
+      height: 25.0,
+      width: 25.0,
+      semanticsLabel: 'watch',
+      color: watchColors,
+    );
+  }
 }

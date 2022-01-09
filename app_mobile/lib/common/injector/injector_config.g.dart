@@ -11,8 +11,10 @@ class _$InjectorConfig extends InjectorConfig {
   void _configureUseCases() {
     final KiwiContainer container = KiwiContainer();
     container
-      ..registerFactory(
-          (c) => StockUseCase(stockRepository: c<StockRepository>()));
+      ..registerSingleton(
+          (c) => StockUseCase(stockRepository: c<StockRepository>()))
+      ..registerSingleton((c) =>
+          WatchlistUseCase(watchlistRepository: c<WatchlistRepository>()));
   }
 
   @override
@@ -20,14 +22,18 @@ class _$InjectorConfig extends InjectorConfig {
     final KiwiContainer container = KiwiContainer();
     container
       ..registerSingleton<StockRepository>((c) => StockRepositoryImpl(
-          stockRemoteDataSource: c<StockRemoteDataSource>()));
+          stockRemoteDataSource: c<StockRemoteDataSource>()))
+      ..registerSingleton<WatchlistRepository>((c) => WatchlistRepositoryImpl(
+          watchlistRemoteDatasource: c<WatchlistRemoteDatasource>()));
   }
 
   @override
   void _configureBlocs() {
     final KiwiContainer container = KiwiContainer();
     container
-      ..registerFactory((c) => StockBloc(stockUseCase: c<StockUseCase>()));
+      ..registerFactory((c) => StockBloc(stockUseCase: c<StockUseCase>()))
+      ..registerFactory(
+          (c) => WatchlistBloc(watchlistUseCase: c<WatchlistUseCase>()));
   }
 
   @override
@@ -35,7 +41,9 @@ class _$InjectorConfig extends InjectorConfig {
     final KiwiContainer container = KiwiContainer();
     container
       ..registerSingleton((c) =>
-          StockRemoteDataSource(remoteDataClient: c<DefaultRemoteClient>()));
+          StockRemoteDataSource(remoteDataClient: c<DefaultRemoteClient>()))
+      ..registerFactory((c) =>
+          WatchlistRemoteDatasource(remoteClient: c<DefaultRemoteClient>()));
   }
 
   @override

@@ -30,7 +30,6 @@ class BaseRemoteDataClient {
     Map<String, String> overrideHeader = const {},
   ]) =>
       {
-        // ...header,
         'content-type': 'application/json',
         ...overrideHeader,
       };
