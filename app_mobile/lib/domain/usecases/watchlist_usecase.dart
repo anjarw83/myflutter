@@ -10,13 +10,15 @@ class WatchlistUseCase {
     @required this.watchlistRepository,
   });
 
-  Future<List<StockModel>> getWatchlistByUserId(String userId) async{
+  Future<List<StockModel>> getWatchlistByUserId(String userId) async {
     final response = await watchlistRepository.getWatchlistByUserId(userId);
     return response;
   }
 
-  Future<bool> updateWatchlistByUserId(String userId, List<StockEntity> stocks) async{
-    final response = await watchlistRepository.updateWatchlistByUserId(userId, stocks);
+  Future<bool> updateWatchlistByUserId(
+      String userId, List<StockEntity> stocks) async {
+    final response =
+        await watchlistRepository.updateWatchlistByUserId(userId, stocks);
     return response;
-}
+  }
 }

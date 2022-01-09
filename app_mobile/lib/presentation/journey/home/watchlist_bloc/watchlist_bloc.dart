@@ -45,7 +45,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       await watchlistUseCase.updateWatchlistByUserId(
           event.userId, event.stocks);
       debugPrint('[UpdatedWatchlistSuccessState]');
-      yield UpdatedWatchlistSuccessState();
+      yield UpdatedWatchlistSuccessState(stocks: event.stocks);
     } catch (error) {
       debugPrint(error.toString());
       yield UpdatedWatchlistFailedState();

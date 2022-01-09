@@ -76,13 +76,11 @@ class _StocksState extends State<Stocks> {
   Widget _buildBody(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
         _buildSearchTable(context),
         const SizedBox(
-          height: 20,
+          height: 5,
         ),
+        _buildStockHeader(context),
         BlocConsumer<StockBloc, StockState>(
           builder: (context, state) {
             switch (state.runtimeType) {
@@ -130,9 +128,7 @@ class _StocksState extends State<Stocks> {
                 break;
             }
           },
-        )
-
-        // _buildStockTable(context)
+        ),
       ],
     );
   }
@@ -148,7 +144,72 @@ class _StocksState extends State<Stocks> {
     );
   }
 
-  Widget _buildStockHeader(BuildContext context) {}
+  Widget _buildStockHeader(BuildContext context) => Card(
+        color: Colors.white70,
+    margin: const EdgeInsets.symmetric(
+      vertical: 1,
+    ),
+        elevation: 1,
+        child: Row(
+          children: [
+            Container(
+              width: 30,
+              alignment: Alignment.center,
+              child: const Text(
+                'No',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+            Container(
+              width: 50,
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/binoculars.svg',
+                height: 25.0,
+                width: 25.0,
+                semanticsLabel: 'watch',
+                color: Colors.deepPurpleAccent,
+              ),
+            ),
+            Container(
+              width: 50,
+              alignment: Alignment.center,
+              child: const Text(
+                'Cur',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+            Container(
+              width: 180,
+              alignment: Alignment.center,
+              child: const Text(
+                'Description',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+            Container(
+              width: 70,
+              alignment: Alignment.center,
+              child: const Text(
+                'Symbols',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _buildStockTable(BuildContext context) => Expanded(
         child: listStockEntity != null
@@ -181,7 +242,6 @@ class _StocksState extends State<Stocks> {
       );
 
   List<Widget> _buildListRow(BuildContext context, index) {
-    final bool watchList = listStockEntity[index].watchlist ?? true;
     return [
       Container(
         width: 30,

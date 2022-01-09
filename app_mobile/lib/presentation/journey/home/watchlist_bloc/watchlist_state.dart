@@ -19,6 +19,13 @@ class WatchlistLoadFailedState extends WatchlistState {}
 
 class UpdatedWatchlistInProgressState extends WatchlistState {}
 
-class UpdatedWatchlistSuccessState extends WatchlistState {}
+class UpdatedWatchlistSuccessState extends WatchlistState {
+  final List<StockEntity> stocks;
 
-class UpdatedWatchlistFailedState extends WatchlistState {}
+  UpdatedWatchlistSuccessState({
+    @required this.stocks,
+  });
+}
+
+class UpdatedWatchlistFailedState extends WatchlistState {
+}

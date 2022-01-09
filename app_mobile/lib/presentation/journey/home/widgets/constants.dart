@@ -9,4 +9,6 @@ class StockConstants {
   static const int defaultRowHeight = 50;
 
   static const ValueKey stockTable = ValueKey('key_stock_table');
+
+  static const String watchlistSuccessUpdated = 'Watchlist Successfully Updated';
 }
