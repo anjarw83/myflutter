@@ -25,3 +25,6 @@ Re-Generate ```injector.g.dart``` :
 - [Introduction to clean architecture](https://www.freecodecamp.org/news/a-quick-introduction-to-clean-architecture-990c014448d2/)
 - [Kiwi](https://github.com/vanlooverenkoen/kiwi)
 - [Bloc](https://bloclibrary.dev/#/)
+
+## Short Demoo
+- [Flutter Demo](https://e1.pcloud.link/publink/show?code=XZK0MFZFGrTQHhILEHYMmXf2bEa2YI18oVk)
