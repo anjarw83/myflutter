@@ -6,56 +6,19 @@ import 'package:app_mobile/domain/entities/user_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyAccount extends StatefulWidget {
-  const MyAccount({Key key, UserEntity userEntity}) : super(key: key);
+class MyAccount extends StatelessWidget {
+
+  final UserEntity userEntity;
+
+  MyAccount({
+    Key key,
+    @required this.userEntity,
+  }) : super(key: key);
 
   @override
-  _MyAccount createState() => _MyAccount();
-}
+  Widget build(BuildContext context) => _buildProfile(context);
 
-class _MyAccount extends State<MyAccount> {
-  AuthenticationBloc authenticationBloc;
-
-  UserEntity userEntity = UserEntity();
-
-  @override
-  void initState() {
-    authenticationBloc = Injector.resolve<AuthenticationBloc>();
-    authenticationBloc.add(FetchAuthUser());
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    authenticationBloc?.close();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
-      create: (_) => authenticationBloc,
-      child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is AuthUserState) {
-            return _buildProfile();
-          } else {
-            return Container();
-          }
-        },
-      listener: (context, state) {
-          switch(state.runtimeType){
-            case AuthUserState:
-              final AuthUserState _state = state;
-              userEntity = _state.user;
-              break;
-          }
-      },
-      ),
-    );
-  }
-
-  ListView _buildProfile() => ListView(
+  ListView _buildProfile(BuildContext context) => ListView(
         children: <Widget>[
           Container(
             height: 250,

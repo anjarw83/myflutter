@@ -7,9 +7,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      // child: _loginButton(context),
-      child: GoogleSignInButton()
-    );
+        // child: _loginButton(context),
+        child: GoogleSignInButton());
   }
-
 }

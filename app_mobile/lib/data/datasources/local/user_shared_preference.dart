@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSharedPreference {
   UserEntity userEntity = UserEntity();
+  String accessToken;
   final SharedPreferences prefs;
 
   UserSharedPreference({this.prefs});

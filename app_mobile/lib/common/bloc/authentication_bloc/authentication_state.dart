@@ -6,7 +6,7 @@ abstract class AuthenticationState {
   AuthenticationState({this.userId});
 }
 
-class InitAuthentication extends AuthenticationState {}
+class InitAuthenticationState extends AuthenticationState {}
 
 class Authenticated extends AuthenticationState {
   final UserEntity user;

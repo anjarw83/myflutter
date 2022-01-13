@@ -1,6 +1,5 @@
 import 'package:app_mobile/common/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:app_mobile/common/bloc/authentication_bloc/authentication_state.dart';
-import 'package:app_mobile/common/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:app_mobile/presentation/routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,17 +25,14 @@ class App extends StatelessWidget {
     );
   }
 
-  List<BlocProvider> _getBlocProvider() =>
-      [
+  List<BlocProvider> _getBlocProvider() => [
         BlocProvider<AuthenticationBloc>(
-          create: (BuildContext context) =>
-              Injector.resolve<AuthenticationBloc>(),
+          create: (BuildContext context) => authenticationBloc,
         )
       ];
 
   Widget _buildApp(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
@@ -46,14 +42,13 @@ class App extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  final AuthenticationBloc authenticationBloc;
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+  const MyHomePage({
+    Key key,
+    this.authenticationBloc,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text(HomeConstants.homeTitleText),
       ),
-      body: const Center(
-        child: LoginScreen()
-      ),
+      body: const Center(child: LoginScreen(),),
     );
   }
 }

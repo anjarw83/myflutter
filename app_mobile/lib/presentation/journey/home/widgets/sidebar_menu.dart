@@ -40,11 +40,5 @@ class SideBarMenu extends StatelessWidget {
     Injector.resolve<AuthenticationBloc>().add(
       LoggingOutEvent(),
     );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHomePage(),
-      ),
-    );
   }
 }

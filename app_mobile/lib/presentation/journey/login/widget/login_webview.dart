@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:app_mobile/common/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:app_mobile/common/bloc/authentication_bloc/authentication_event.dart';
-import 'package:app_mobile/common/bloc/authentication_bloc/authentication_state.dart';
 import 'package:app_mobile/common/constants/login_constants.dart';
 import 'package:app_mobile/common/injector/injector.dart';
 import 'package:app_mobile/presentation/journey/home/home_screen.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class LoginWeb extends StatefulWidget {
+
   @override
   _LoginWebState createState() => _LoginWebState();
 }
@@ -24,6 +24,7 @@ class _LoginWebState extends State<LoginWeb> {
 
   @override
   void initState() {
+    Injector.resolve<AuthenticationBloc>().add(InitialAuthEvent(),);
     super.initState();
   }
 
@@ -102,11 +103,12 @@ class _LoginWebState extends State<LoginWeb> {
         });
   }
 
-  void readJS() async {
+  Future<void> readJS() async {
     final html = await _webViewController.runJavascriptReturningResult(
-        "window.document.getElementsByTagName('pre')[0].innerHTML;");
+        // "window.document.getElementsByTagName('pre')[0].innerHTML;"
+        'document.documentElement.innerText'
+    );
     Injector.resolve<AuthenticationBloc>()
         .add(LoggingInEvent(userMap: json.decode(html)));
-    print(html);
   }
 }

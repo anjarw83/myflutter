@@ -4,4 +4,5 @@ class Configurations {
   static final String _remoteHost = DefaultConfig.defaultRemoteHost;
 
   static String get remoteHost => _remoteHost;
+  static String accessToken;
 }

@@ -19,6 +19,8 @@ class BaseRemoteDataClient {
     setUpClient();
   }
 
+  String get accessToken => Configurations.accessToken;
+
   void setUpClient() {
     debugPrint('setupClient');
     client = Client();
@@ -31,6 +33,7 @@ class BaseRemoteDataClient {
   ]) =>
       {
         'content-type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
         ...overrideHeader,
       };
 
