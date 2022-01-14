@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_mobile/common/config/configurations.dart';
+import 'package:app_mobile/common/utils/utils.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -42,22 +43,29 @@ class BaseRemoteDataClient {
   }
 
   dynamic getResponse(Response response) {
-    final Map<String, dynamic> result = json.decode(response.body);
-    return result;
+    // Todo: Handle by Utils
+    return Utils.getResponse(response);
+
+    // final Map<String, dynamic> result = json.decode(response.body);
+    // return result;
   }
 
   dynamic get(String path,
       {Map<String, String> overrideHeader = const {}}) async {
-    debugPrint('[BaseRemoteDataClient].get');
+    debugPrint('[Method.GET][BaseRemoteDataClient]');
     final requestHeader = generateRequestHeader(overrideHeader);
 
     final Response response =
         await client.get(getParsedUrl(path), headers: requestHeader);
+
+    debugPrint('[GET] $path}');
+    debugPrint('Response ${response.body.toString()}');
     return getResponse(response);
   }
 
   dynamic patch(String path, dynamic data,
       {Map<String, String> overrideHeader = const {}}) async {
+    debugPrint('[Method.Patch][BaseRemoteDataClient]');
     final requestHeader = generateRequestHeader(overrideHeader);
 
     final Response response = await client.patch(
@@ -65,6 +73,9 @@ class BaseRemoteDataClient {
       body: json.encode(data),
       headers: requestHeader,
     );
+
+    debugPrint('[PATCH] $path}');
+    debugPrint('Response ${response.body.toString()}');
     return getResponse(response);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:app_mobile/common/network/http/default_remote_data_client.dart';
 import 'package:app_mobile/data/datasources/constants/stock_remote_constants.dart';
 import 'package:app_mobile/data/models/stock_model.dart';
+import 'package:app_mobile/domain/entities/default_response_entity.dart';
 import 'package:flutter/material.dart';
 
 class StockRemoteDataSource {
@@ -17,16 +18,23 @@ class StockRemoteDataSource {
     }
     debugPrint('StockRemoteDS::getStock');
 
-    final Map<String, dynamic> response = await remoteDataClient.get(url);
-    return StockModel.fromJson(response);
+    // final Map<String, dynamic> response = await remoteDataClient.get(url);
+    final DefaultResponseEntity response = await remoteDataClient.get(url);
+
+    debugPrint('Space');
+    return StockModel.fromJson(response.body);
   }
 
   Future<bool> toggleStockWatchlist(String id, bool watchlist) async {
     final String url = '${StockEndpoints.stock}/$id/watchlist';
     final body = {'watchlist': watchlist};
     try {
-      await remoteDataClient.patch(url, body);
-      return true;
+      final DefaultResponseEntity response =
+          await remoteDataClient.patch(url, body);
+      if (response.statusCode == 204) {
+        return true;
+      }
+      return false;
     } catch (error) {
       debugPrint(error.toString());
       return false;
